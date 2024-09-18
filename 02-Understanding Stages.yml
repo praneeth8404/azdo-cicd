@@ -13,33 +13,55 @@ stages:
      steps:
      - bash: echo job1
      - bash: echo $(PipelineLevelVaribale)
-   - job: job2
-     steps:
-     - bash: echo job2
-- stage: DevDeploy
-  variables:
-   environment: DEV
-  dependsOn: Build
-  jobs:
-  - job: DeployJob
-    steps:
-    - bash: echo $(environment) Deploy
-- stage: QADeploy
-  variables:
-   environment: QA
-  dependsOn: Build
-  jobs:
-  - job: QADeployJob
-    steps:
-    - bash: echo $(environment) Deploy
-- stage: ProdDeploy
-  variables:
-   environment: PROD
-  dependsOn: 
-   - DEVDeploy
-   - QADeploy
-  jobs:
-  - job: ProdDeployJob
-    steps:
-    - bash: echo $(environment) Deploy
+     - bash: echo $(PipelineLevelVariable)
+     - bash: echo $(Build.BuildNumber)
+     - bash: echo $(Build.BuildId)
+     - bash: echo $(Build.SourceBranchName)
+     - bash: echo $(Build.SourcesDirectory)
+     - bash: echo $(System.DefaultWorkingDirectory)
+     - bash: ls -R $(System.DefaultWorkingDirectory)
+     - bash: echo $(Build.ArtifactStagingDirectory)
+     - bash: java -version
+     - bash: node --version
+     - bash: python --version 
+     - bash: mvn -version 
+     - bash: ls -R $(Build.ArtifactStagingDirectory)
+     - task: CopyFiles@2
+       inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)'
+        Contents: |
+          **/*.yaml
+          **/*.tf
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+     - bash: ls -R $(Build.ArtifactStagingDirectory)
+
+  #  - job: job2
+  #    steps:
+  #    - bash: echo job2
+# - stage: DevDeploy
+#   variables:
+#    environment: DEV
+#   dependsOn: Build
+#   jobs:
+#   - job: DeployJob
+#     steps:
+#     - bash: echo $(environment) Deploy
+# - stage: QADeploy
+#   variables:
+#    environment: QA
+#   dependsOn: Build
+#   jobs:
+#   - job: QADeployJob
+#     steps:
+#     - bash: echo $(environment) Deploy
+# - stage: ProdDeploy
+#   variables:
+#    environment: PROD
+#   dependsOn: 
+#    - DEVDeploy
+#    - QADeploy
+#   jobs:
+#   - job: ProdDeployJob
+#     steps:
+#     - bash: echo $(environment) Deploy
 
